@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "hqaW9mkjGT+aXoVRpPYCp98gbd31obDa6NSf7MtTrHw93CO5rEYXvRylfXoznTG4KeSErvNwEiea+bA/fmhfXQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\ozzzi\\Desktop\\Encryption-service\\Encryption-service\\Encryption-service.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ozzzi\\.nuget\\packages\\layumba.functional\\2.0.0\\layumba.functional.2.0.0.nupkg.sha512",
+    "C:\\Users\\ozzzi\\.nuget\\packages\\system.collections.immutable\\6.0.0\\system.collections.immutable.6.0.0.nupkg.sha512",
+    "C:\\Users\\ozzzi\\.nuget\\packages\\system.reactive\\5.0.0\\system.reactive.5.0.0.nupkg.sha512",
+    "C:\\Users\\ozzzi\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
+    "C:\\Users\\ozzzi\\.nuget\\packages\\system.threading.tasks.dataflow\\6.0.0\\system.threading.tasks.dataflow.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
