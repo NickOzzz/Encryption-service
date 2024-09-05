@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.DataProtection;
 
 namespace Encryption_service.Services
 {
-    public class CrypticService : ICrypticService
+    public sealed class CrypticService : ICrypticService
     {
         private readonly IDataProtectionProvider crypticProvider;
 
@@ -20,14 +20,14 @@ namespace Encryption_service.Services
             => DecryptAsync(messageDto.encryptedMessage, messageDto.key).Recover(ToDecryptionFallback);
 
         private Task<IEncryptionEvent> EncryptAsync(string key, string message)
-            => crypticProvider.CreateProtector(key)
-                .Pipe(protector => protector.Protect(message))
-                .Pipe(protectedString => Task.FromResult(new SuccesfullyEncrypted(protectedString, key) as IEncryptionEvent));
+            => Task.FromResult(crypticProvider.CreateProtector(key))
+                .Map(protector => protector.Protect(message))
+                .Bind(protectedString => Task.FromResult(new SuccessfullyEncrypted(protectedString, key) as IEncryptionEvent));
 
         private Task<IDecryptionEvent> DecryptAsync(string encryptedMessage, string key)
-            => crypticProvider.CreateProtector(key)
-                .Pipe(protector => protector.Unprotect(encryptedMessage))
-                .Pipe(unprotectedString => Task.FromResult(new SuccessfullyDecrypted(unprotectedString) as IDecryptionEvent));
+            => Task.FromResult(crypticProvider.CreateProtector(key))
+                .Map(protector => protector.Unprotect(encryptedMessage))
+                .Bind(unprotectedString => Task.FromResult(new SuccessfullyDecrypted(unprotectedString) as IDecryptionEvent));
 
         private IEncryptionEvent ToEncryptionFallback(Exception ex)
             => new FailedEncryption(ex.Message);

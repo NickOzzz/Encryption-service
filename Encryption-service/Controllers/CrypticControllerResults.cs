@@ -8,7 +8,7 @@ namespace Encryption_service.Controllers
         public static Func<IEncryptionEvent, IActionResult> CreateEncryptionResult()
             => encryptionEvent => encryptionEvent switch
             {
-                SuccesfullyEncrypted success => new OkObjectResult(success),
+                SuccessfullyEncrypted success => new OkObjectResult(success),
                 FailedEncryption failed => new BadRequestObjectResult(failed),
                 _ => GenerateUnknownError()
             };
