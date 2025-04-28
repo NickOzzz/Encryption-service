@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using static Encryption_service.Controllers.CrypticControllerResults;
 
 namespace Encryption_service.Controllers
 {
@@ -7,9 +8,6 @@ namespace Encryption_service.Controllers
     {
         [HttpGet("error")]
         public IActionResult Error()
-            => new ObjectResult(new { Error = "Unknown error occured. Please reach out to admin" })
-            {
-                StatusCode = 500
-            };
+            => GenerateUnknownError();
     }
 }
