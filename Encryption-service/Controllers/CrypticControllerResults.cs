@@ -21,7 +21,7 @@ namespace Encryption_service.Controllers
                _ => GenerateUnknownError()
            };
 
-        private static IActionResult GenerateUnknownError()
+        public static IActionResult GenerateUnknownError()
             => new ObjectResult(new { error = "Unknown error. Please reach out to admin." })
             { 
                 StatusCode = 500
