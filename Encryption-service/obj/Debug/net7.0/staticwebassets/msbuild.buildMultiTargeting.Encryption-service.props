@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\Encryption-service.props" />
-</Project>
