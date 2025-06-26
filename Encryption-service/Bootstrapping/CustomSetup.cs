@@ -8,7 +8,7 @@ namespace Encryption_service.Bootstrapping;
 
 public static class CustomSetup
 {
-    public static IServiceCollection AddCustomSetup(this IServiceCollection services)
+    public static void AddCustomSetup(this IServiceCollection services)
         => services
              .AddTransient<ICrypticService, CrypticService>()
              .AddTransient(_ => DataProtectionProvider.Create(Directory.GetCurrentDirectory()))

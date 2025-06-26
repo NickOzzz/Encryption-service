@@ -29,9 +29,9 @@ public sealed class CrypticService : ICrypticService
             .Map(protector => protector.Unprotect(encryptedMessage))
             .Map(unprotectedString => new SuccessfullyDecrypted(unprotectedString) as IDecryptionEvent);
 
-    private IEncryptionEvent ToEncryptionFallback(Exception ex)
+    private static IEncryptionEvent ToEncryptionFallback(Exception ex)
         => new FailedEncryption(ex.Message);
 
-    private IDecryptionEvent ToDecryptionFallback(Exception ex)
+    private static IDecryptionEvent ToDecryptionFallback(Exception ex)
         => new FailedDecryption(ex.Message);
 }
