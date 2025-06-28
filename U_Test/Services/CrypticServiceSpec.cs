@@ -1,4 +1,5 @@
-﻿using Encryption_service.Events;
+﻿using Encryption_service.Dtos;
+using Encryption_service.Events;
 using Encryption_service.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.DataProtection;
@@ -7,50 +8,81 @@ namespace U_Test.Services;
 
 public class CrypticServiceSpec
 {
-    [Fact]
-    public async Task EncryptReturnsSuccess()
-    {
-        var service = new CrypticService(CreateProtectionProvider());
+    private readonly ICrypticService _crypticService;
 
-        var result = await service.Encrypt("someMessage");
+    public CrypticServiceSpec()
+        => _crypticService = new CrypticService(CreateProtectionProvider());
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public async Task EncryptReturnsSuccessWithUnspecifiedKey(string? key)
+    {
+        var messageToEncrypt = new MessageToEncryptDto("someMessage", key);
+
+        var result = await _crypticService.Encrypt(messageToEncrypt);
 
         result.Should().BeOfType<SuccessfullyEncrypted>();
         (result as SuccessfullyEncrypted)!.EncryptedMessage.Should().NotBeNullOrEmpty();
         (result as SuccessfullyEncrypted)!.Key.Should().NotBeNullOrEmpty();
+        (result as SuccessfullyEncrypted)!.Key.Should().NotBeNullOrWhiteSpace();
+    }
+
+    [Fact]
+    public async Task EncryptReturnsSuccessWithSpecifiedKey()
+    {
+        var messageToEncrypt = new MessageToEncryptDto("someMessage", "testKey");
+
+        var result = await _crypticService.Encrypt(messageToEncrypt);
+
+        result.Should().BeOfType<SuccessfullyEncrypted>();
+        (result as SuccessfullyEncrypted)!.EncryptedMessage.Should().NotBeNullOrEmpty();
+        (result as SuccessfullyEncrypted)!.Key.Should().Be(messageToEncrypt.Key);
     }
 
     [Fact]
     public async Task EncryptReturnsFailure()
     {
-        var service = new CrypticService(CreateProtectionProvider());
+        var messageToEncrypt = new MessageToEncryptDto(null!, "testKey");
 
-        var result = await service.Encrypt(null!);
+        var result = await _crypticService.Encrypt(messageToEncrypt);
 
         result.Should().BeOfType<FailedEncryption>();
         (result as FailedEncryption)!.Error.Should().NotBeNullOrEmpty();
     }
 
-    [Fact]
-    public async Task DecryptReturnsSuccess()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("testKey")]
+    public async Task DecryptReturnsSuccess(string? key)
     {
-        var service = new CrypticService(CreateProtectionProvider());
+        var messageToEncrypt = new MessageToEncryptDto("someMessage", key);
 
-        var encryptedMessage = await service.Encrypt("someMessage") as SuccessfullyEncrypted;
+        var encryptedMessage = await _crypticService.Encrypt(messageToEncrypt) as SuccessfullyEncrypted;
 
         encryptedMessage.Should().NotBeNull();
 
-        var result = await service.Decrypt(new(encryptedMessage!.EncryptedMessage, encryptedMessage.Key));
+        var encryptedMessageDto = new EncryptedMessageDto(encryptedMessage!.EncryptedMessage, encryptedMessage.Key);
+
+        var result = await _crypticService.Decrypt(encryptedMessageDto);
 
         result.Should().BeOfType<SuccessfullyDecrypted>();
         (result as SuccessfullyDecrypted)!.Message.Should().NotBeNullOrEmpty();
+        (result as SuccessfullyDecrypted)!.Message.Should().Be(messageToEncrypt.Message);
     }
 
-    [Fact]
-    public async Task DecryptReturnsFailure()
+    [Theory]
+    [InlineData("encryptedMessage", "key")]
+    [InlineData("", "")]
+    [InlineData(null, null)]
+    public async Task DecryptReturnsFailure(string? message, string? key)
     {
-        var service = new CrypticService(CreateProtectionProvider());
+        var encryptedMessageDto = new EncryptedMessageDto(message!, key!);
 
-        var result = await service.Decrypt(new("encryptedMessage", "key"));
+        var result = await _crypticService.Decrypt(encryptedMessageDto);
 
         result.Should().BeOfType<FailedDecryption>();
         (result as FailedDecryption)!.Error.Should().NotBeNullOrEmpty();

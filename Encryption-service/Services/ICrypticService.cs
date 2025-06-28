@@ -5,6 +5,6 @@ namespace Encryption_service.Services;
 
 public interface ICrypticService
 {
-    Task<IEncryptionEvent> Encrypt(string message);
+    Task<IEncryptionEvent> Encrypt(MessageToEncryptDto messageDto);
     Task<IDecryptionEvent> Decrypt(EncryptedMessageDto messageDto);
 }

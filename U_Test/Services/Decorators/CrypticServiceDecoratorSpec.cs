@@ -13,17 +13,17 @@ public class CrypticServiceDecoratorSpec
     public async Task EncryptReturnsSuccess() 
     {
         var mockService = new Mock<ICrypticService>();
-        mockService.Setup(x => x.Encrypt(It.IsNotNull<string>()))
+        mockService.Setup(x => x.Encrypt(It.IsNotNull<MessageToEncryptDto>()))
             .ReturnsAsync(new SuccessfullyEncrypted(string.Empty, string.Empty));
 
         var serviceDecorator = new CrypticServiceDecorator(mockService.Object, Mock.Of<Serilog.ILogger>());
 
-        var result = await serviceDecorator.Encrypt(string.Empty);
+        var result = await serviceDecorator.Encrypt(new MessageToEncryptDto(string.Empty, string.Empty));
 
         result.Should().NotBeNull();
         result.Should().BeOfType<SuccessfullyEncrypted>();
 
-        mockService.Verify(x => x.Encrypt(It.IsNotNull<string>()), Times.Once());
+        mockService.Verify(x => x.Encrypt(It.IsNotNull<MessageToEncryptDto>()), Times.Once());
     }
 
     [Fact]

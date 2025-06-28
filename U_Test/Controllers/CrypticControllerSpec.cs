@@ -14,10 +14,10 @@ public class CrypticControllerSpec
     public async Task EncryptReturnsSuccess()
     {
         var encryptionService = new Mock<ICrypticService>();
-        encryptionService.Setup(service => service.Encrypt(It.IsAny<string>())).Returns(Task.FromResult(new SuccessfullyEncrypted("encrypted", "key") as IEncryptionEvent));
+        encryptionService.Setup(service => service.Encrypt(It.IsAny<MessageToEncryptDto>())).Returns(Task.FromResult(new SuccessfullyEncrypted("encrypted", "key") as IEncryptionEvent));
 
         var controller = new CrypticController(encryptionService.Object);
-        var result = await controller.EncryptMessage(new MessageToEncryptDto("testMessage"));
+        var result = await controller.EncryptMessage(new MessageToEncryptDto("testMessage", "testKey"));
 
         result.Should().BeOfType<OkObjectResult>();
     }
@@ -26,10 +26,10 @@ public class CrypticControllerSpec
     public async Task EncryptReturnsFailure()
     {
         var encryptionService = new Mock<ICrypticService>();
-        encryptionService.Setup(service => service.Encrypt(It.IsAny<string>())).Returns(Task.FromResult(new FailedEncryption("error") as IEncryptionEvent));
+        encryptionService.Setup(service => service.Encrypt(It.IsAny<MessageToEncryptDto>())).Returns(Task.FromResult(new FailedEncryption("error") as IEncryptionEvent));
 
         var controller = new CrypticController(encryptionService.Object);
-        var result = await controller.EncryptMessage(new MessageToEncryptDto("testMessage"));
+        var result = await controller.EncryptMessage(new MessageToEncryptDto("testMessage", "testKey"));
 
         result.Should().BeOfType<BadRequestObjectResult>();
     }

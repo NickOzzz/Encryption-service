@@ -15,9 +15,10 @@ public class CrypticController : Controller
     public CrypticController(ICrypticService crypticService)
         => _crypticService = crypticService;
 
+    /// <remarks>If key is null, empty or whitespace then random one will be generated!</remarks>
     [HttpPost("encrypt")]
     public Task<IActionResult> EncryptMessage([FromBody] MessageToEncryptDto message)
-        => _crypticService.Encrypt(message.Message).Map(CreateEncryptionResult());
+        => _crypticService.Encrypt(message).Map(CreateEncryptionResult());
 
     [HttpPost("decrypt")]
     public Task<IActionResult> DecryptMessage([FromBody] EncryptedMessageDto encryptedMessage)

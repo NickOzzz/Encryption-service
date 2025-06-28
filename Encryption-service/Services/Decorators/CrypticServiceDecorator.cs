@@ -14,15 +14,20 @@ public class CrypticServiceDecorator : ICrypticService
         _logger = logger;
     }
 
-    public async Task<IEncryptionEvent> Encrypt(string message) 
+    public async Task<IEncryptionEvent> Encrypt(MessageToEncryptDto messageDto) 
     {
         var startingTime = DateTime.UtcNow;
         _logger.Information("Starting {methodName} at: {startingTime}", nameof(Encrypt), startingTime);
 
-        var result = await _next.Encrypt(message);
+        var result = await _next.Encrypt(messageDto);
+
+        var usedCustomKey = true;
+        var key = messageDto.Key;
+        if (string.IsNullOrEmpty(key) || string.IsNullOrWhiteSpace(key))
+            usedCustomKey = false;
 
         var timeElapsed = DateTime.UtcNow - startingTime;
-        _logger.Information("Finishing {methodName} with elapsed time: {timeElapsed} sec.", nameof(Encrypt), timeElapsed.TotalSeconds);
+        _logger.Information("Finishing {methodName} with elapsed time: {timeElapsed} sec. Used custom encryption key: {usedCustomKey}", nameof(Encrypt), timeElapsed.TotalSeconds, usedCustomKey);
 
         return result;
     }

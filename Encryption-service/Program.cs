@@ -1,4 +1,5 @@
 using Encryption_service.Bootstrapping;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,7 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddCustomSetup();
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(config => config.IncludeXmlComments(Path.Combine(
+    AppContext.BaseDirectory,
+    $"{Assembly.GetExecutingAssembly().GetName().Name}.xml")));
 
 var app = builder.Build();
 
