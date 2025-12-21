@@ -9,7 +9,7 @@ A. To build app's image and run it docker in container run command below:
 B. If you do not want to build the image on you machine then you can pull it from public repository and run container on your own: 
 
 1. docker pull nicklavr/encryption-service:main
-2. docker run --restart=always -d -p 8080:8080 --name encryptionservicecontainer nicklavr/ecnryption-service:main
+2. docker run --restart=always -d -p 8080:8080 --name encryptionservicecontainer nicklavr/encryption-service:main
 
 LAUNCHING
 
